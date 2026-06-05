@@ -24,9 +24,45 @@ Dependencies
 
 import sys
 import importlib
+from datetime import datetime
 
 import functions
 importlib.reload(functions)
+
+from datetime import datetime
+
+import functions
+importlib.reload(functions) # Reload the module to ensure the latest changes are reflected
+
+sys.path.append("/home/lgaudin/stage/Task1_Remote_Sensing/automatique")
+
+log_path = "/home/lgaudin/stage/Task1_Remote_Sensing/automatique/logs/"
+os.makedirs(log_path, exist_ok=True)
+
+# Timestamp unique par exécution
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_file = os.path.join(log_path, f"log_{timestamp}.txt")
+
+
+class Tee:
+    def __init__(self, file_path):
+        self.file = open(file_path, "a")
+        self.stdout = sys.stdout
+        
+    def write(self, message):
+        self.file.write(message)
+        self.stdout.write(message)
+
+    def flush(self):
+        self.file.flush()
+        self.stdout.flush()
+
+
+# Activation redirection logs
+sys.stdout = Tee(log_file)
+sys.stderr = Tee(log_file)
+
+print(f"=== Début exécution : {timestamp} ===")
 
 folder_list = ["path/to/working/directory"]
 raster_names = ["raster_name"]
